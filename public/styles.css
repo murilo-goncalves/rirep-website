@@ -1,0 +1,20 @@
+.jumbotron {
+  background-color: rgba(238, 238, 238, 0.7);
+}
+
+#form {
+  display: inline-block;
+}
+
+#rirreper {
+  height: 500px;
+  float: right;
+}
+
+body {
+  background: url(images/rirep.png) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: contain;
+}
