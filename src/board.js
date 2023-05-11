@@ -20,12 +20,13 @@ const rirrepersRef = collection(db, "rirrepers")
 let rirrepers = []
 
 class RiRepper {
-    constructor(col, row, name, firestoreArray) {
+    constructor(col, row, name, firestoreArray, nVips) {
         this.name = name;
         this.col = col;
         this.row = row;
         this.firestoreArray = firestoreArray;
         this.xArray = this.getXArrayFromFirestoreArray();
+        this.nVips = nVips;
     }
 
     getXArrayFromFirestoreArray() {
@@ -39,11 +40,8 @@ class RiRepper {
     async save() {
         try {
             await setDoc(doc(db, "rirrepers", this.name), {
-                col: this.col,
-                name: this.name,
-                row: this.row,
                 xArray: this.firestoreArray
-            })
+            }, { merge: true })
         } catch(err) {
             console.error("writeToDB failed. reason: ", err)
         }
@@ -121,11 +119,11 @@ class Square {
     drawLittleSquares() {
         const w = this.width / this.ncols;
         const h = (this.height - Square.headerHeight) / this.nrows;
-
+        
         for (let col = 0; col < this.ncols; col++)
             for (let row = 0; row < this.nrows; row++) {
 
-                let littleSquare =new LittleSquare(col, row, col * w + this.x, 
+                let littleSquare = new LittleSquare(col, row, col * w + this.x, 
                     row * h + Square.headerHeight + this.y, w, h, this.ctx)
 
                 this.littleSquares.push(littleSquare);
@@ -180,18 +178,18 @@ class Board {
         //                             1: [0, 0, 0],
         //                             2: [0, 0, 0] };
 
-            // new RiRepper(0, 0, "Jaguar", this.zeroFirestoreArray),
-            // new RiRepper(1, 0, "Malfoi", this.zeroFirestoreArray),
-            // new RiRepper(2, 0, "Torrent", this.zeroFirestoreArray),
-            // new RiRepper(3, 0, "Linguini", this.zeroFirestoreArray),
-            // new RiRepper(4, 0, "Guto", this.zeroFirestoreArray),
-            // new RiRepper(5, 0, "Murikeko", this.zeroFirestoreArray),
-            // new RiRepper(0, 1, "Baiano", this.zeroFirestoreArray),
-            // new RiRepper(1, 1, "Clock", this.zeroFirestoreArray),
-            // new RiRepper(2, 1, "Lirou", this.zeroFirestoreArray),
-            // new RiRepper(3, 1, "Jueio", this.zeroFirestoreArray),
-            // new RiRepper(4, 1, "Pampers", this.zeroFirestoreArray),
-            // new RiRepper(5, 1, "Pinça", this.zeroFirestoreArray),
+        // new RiRepper(0, 0, "Jaguar", this.zeroFirestoreArray),
+        // new RiRepper(1, 0, "Malfoi", this.zeroFirestoreArray),
+        // new RiRepper(2, 0, "Torrent", this.zeroFirestoreArray),
+        // new RiRepper(3, 0, "Linguini", this.zeroFirestoreArray),
+        // new RiRepper(4, 0, "Guto", this.zeroFirestoreArray),
+        // new RiRepper(5, 0, "Murikeko", this.zeroFirestoreArray),
+        // new RiRepper(0, 1, "Baiano", this.zeroFirestoreArray),
+        // new RiRepper(1, 1, "Clock", this.zeroFirestoreArray),
+        // new RiRepper(2, 1, "Lirou", this.zeroFirestoreArray),
+        // new RiRepper(3, 1, "Jueio", this.zeroFirestoreArray),
+        // new RiRepper(4, 1, "Pampers", this.zeroFirestoreArray),
+        // new RiRepper(5, 1, "Pinça", this.zeroFirestoreArray),
 
         this.squares = [];
 
@@ -207,7 +205,7 @@ class Board {
         const querySnapshot = await getDocs(rirrepersRef);
         querySnapshot.forEach((doc) => {
             let data = doc.data();
-            let rirreper = new RiRepper(data.col, data.row, data.name, data.xArray)
+            let rirreper = new RiRepper(data.col, data.row, data.name, data.xArray, data.nVips)
             console.log(JSON.stringify(rirreper));
             rirrepers.push(rirreper);
             const w = this.canvas.width / this.ncols;
@@ -222,16 +220,21 @@ class Board {
     }
 
     click(event) {
-        const x = event.offsetX;
-        const y = event.offsetY;
+        const bounds = this.canvas.getBoundingClientRect();
+        let mouseX = event.pageX - bounds.left - scrollX;
+        let mouseY = event.pageY - bounds.top - scrollY;
+        mouseX /= bounds.width; 
+        mouseY /= bounds.height; 
+        mouseX *= this.canvas.width;
+        mouseY *= this.canvas.height;
 
         for (let square of this.squares) {
-            square.click(x, y);
+            square.click(mouseX, mouseY);
         }
     }
 }
 
-window.onload = function() {
+window.onload = () => {
     let board = new Board();
     try {
         board.init();

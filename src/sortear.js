@@ -1,3 +1,11 @@
+import { rirrepers } from 'board.js'
+
+window.onload = () => {
+  for (let rirreper of rirrepers) {
+    document.getElementsByName(rirreper.name)
+  }
+}
+
 function sortear() {
   var rirrepers = {};
   var inputs = document.getElementById("form").querySelectorAll(".input");

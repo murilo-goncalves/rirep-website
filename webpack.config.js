@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './public/board.js',
+  entry: './src/board.js',
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: 'bundle.js'
