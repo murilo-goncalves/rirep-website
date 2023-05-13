@@ -1,53 +1,5 @@
-import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
-import { collection, doc, setDoc, getDocs } from 'firebase/firestore'
+import { rirreperServiceInstance } from './rirreper_service.js'
       
-const firebaseConfig = {
-
-    apiKey: "AIzaSyBdMn31JI0ENjHpdG8ymFFgvNQbYoeZk5g",
-    authDomain: "quadro-de-x-ri-rep.firebaseapp.com",
-    projectId: "quadro-de-x-ri-rep",
-    storageBucket: "quadro-de-x-ri-rep.appspot.com",
-    messagingSenderId: "1068317095641",
-    appId: "1:1068317095641:web:b463f337238d8c72bfb0c8"
-
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const rirrepersRef = collection(db, "rirrepers")
-
-let rirrepers = []
-
-class RiRepper {
-    constructor(col, row, name, firestoreArray, nVips) {
-        this.name = name;
-        this.col = col;
-        this.row = row;
-        this.firestoreArray = firestoreArray;
-        this.xArray = this.getXArrayFromFirestoreArray();
-        this.nVips = nVips;
-    }
-
-    getXArrayFromFirestoreArray() {
-        let tmpArray = [];
-        tmpArray.push(this.firestoreArray['0']);
-        tmpArray.push(this.firestoreArray['1']);
-        tmpArray.push(this.firestoreArray['2']);
-        return tmpArray;
-    }
-
-    async save() {
-        try {
-            await setDoc(doc(db, "rirrepers", this.name), {
-                xArray: this.firestoreArray
-            }, { merge: true })
-        } catch(err) {
-            console.error("writeToDB failed. reason: ", err)
-        }
-    }
-}
-
 class LittleSquare {
     constructor(col, row, x, y, width, height, ctx) {
         this.col = col;
@@ -162,7 +114,7 @@ class Square {
                 }
             }
 
-        this.rirreper.save();
+        rirreperServiceInstance.updateXArray(this.rirreper);
     }
 }
 
@@ -173,7 +125,8 @@ class Board {
 
         this.nrows = 2;
         this.ncols = 6;
-
+        
+        // QUANDO PRECISAR SALVAR NO BANCO NOVAMENTE
         // this.zeroFirestoreArray = { 0: [0, 0, 0],
         //                             1: [0, 0, 0],
         //                             2: [0, 0, 0] };
@@ -197,25 +150,13 @@ class Board {
     }
 
     async init() {
-        // for (const rirreper of rirrepers) {
-        //     await rirreper.save(); 
-        //     console.log(rirreper)
-        // }
-
-        const querySnapshot = await getDocs(rirrepersRef);
-        querySnapshot.forEach((doc) => {
-            let data = doc.data();
-            let rirreper = new RiRepper(data.col, data.row, data.name, data.xArray, data.nVips)
-            console.log(JSON.stringify(rirreper));
-            rirrepers.push(rirreper);
+        const rirrepers = await rirreperServiceInstance.getRirrepers();
+        rirrepers.forEach((rirreper) => {
             const w = this.canvas.width / this.ncols;
             const h = this.canvas.height / this.nrows;
             let square = new Square(rirreper, w, h, this.ctx)
-            console.log(JSON.stringify(square));
             this.squares.push(square);
             square.draw();
-            
-            console.log(doc.id, " => ", doc.data());
         });
     }
 
