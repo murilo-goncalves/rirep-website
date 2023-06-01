@@ -1,5 +1,5 @@
 import { rirreperServiceInstance } from './rirreper_service.js'
-      
+
 class LittleSquare {
     constructor(col, row, x, y, width, height, ctx) {
         this.col = col;
@@ -28,32 +28,31 @@ class LittleSquare {
     }
 
     removeX() {
-        this.ctx.clearRect(this.x + this.cleaningOffset, 
-                           this.y + this.cleaningOffset, 
-                           this.width - 2 * this.cleaningOffset, 
-                           this.height - 2 * this.cleaningOffset);
+        this.ctx.clearRect(this.x + this.cleaningOffset,
+            this.y + this.cleaningOffset,
+            this.width - 2 * this.cleaningOffset,
+            this.height - 2 * this.cleaningOffset);
         this.hasX = false;
     }
 }
 
 class Square {
-
     static headerHeight = 50;
 
-    constructor(rirreper, width, height, ctx) {
+    constructor(col, row, rirreper, width, height, ctx) {
         this.rirreper = rirreper
-        this.x = rirreper.col * width;
-        this.y = rirreper.row * height;
+        this.x = col * width;
+        this.y = row * height;
         this.width = width;
         this.height = height;
         this.ctx = ctx;
 
-        this.nrows = 3;
-        this.ncols = 3;
+        this.nRows = 3;
+        this.nCols = 3;
 
         this.littleSquares = [];
     }
-    
+
     draw() {
         this.ctx.strokeStyle = 'black';
         this.ctx.lineWidth = 3;
@@ -62,20 +61,20 @@ class Square {
         this.ctx.beginPath();
         this.ctx.moveTo(this.x, this.y + Square.headerHeight);
         this.ctx.lineTo(this.x + this.width, this.y + Square.headerHeight);
-        this.ctx.stroke(); 
+        this.ctx.stroke();
 
         this.drawName();
         this.drawLittleSquares();
     }
 
     drawLittleSquares() {
-        const w = this.width / this.ncols;
-        const h = (this.height - Square.headerHeight) / this.nrows;
-        
-        for (let col = 0; col < this.ncols; col++)
-            for (let row = 0; row < this.nrows; row++) {
+        const w = this.width / this.nCols;
+        const h = (this.height - Square.headerHeight) / this.nRows;
 
-                let littleSquare = new LittleSquare(col, row, col * w + this.x, 
+        for (let col = 0; col < this.nCols; col++)
+            for (let row = 0; row < this.nRows; row++) {
+
+                let littleSquare = new LittleSquare(col, row, col * w + this.x,
                     row * h + Square.headerHeight + this.y, w, h, this.ctx)
 
                 this.littleSquares.push(littleSquare);
@@ -83,7 +82,7 @@ class Square {
                 if (this.rirreper.xArray[row][col] == 1)
                     littleSquare.drawX();
             }
-        
+
         this.littleSquares.forEach(littleSquare => littleSquare.draw());
     }
 
@@ -92,19 +91,19 @@ class Square {
         this.ctx.font = "25px 'Comic Sans', 'Comic Sans MS', 'cursive'";
         this.ctx.textAlign = "center";
 
-        this.ctx.fillText(this.rirreper.name, 
-            this.x + this.width / 2, 
+        this.ctx.fillText(this.rirreper.name,
+            this.x + this.width / 2,
             this.y + Square.headerHeight / 2 + 8
         );
     }
 
     click(x, y) {
-        for (let littleSquare of this.littleSquares)
-            if (x >= littleSquare.x && 
-                x <= littleSquare.x + littleSquare.width && 
-                y >= littleSquare.y && 
+        for (let littleSquare of this.littleSquares) {
+            if (x >= littleSquare.x &&
+                x <= littleSquare.x + littleSquare.width &&
+                y >= littleSquare.y &&
                 y <= littleSquare.y + littleSquare.height) {
-                
+
                 if (!littleSquare.hasX) {
                     littleSquare.drawX();
                     this.rirreper.xArray[littleSquare.row][littleSquare.col] = 1;
@@ -113,8 +112,7 @@ class Square {
                     this.rirreper.xArray[littleSquare.row][littleSquare.col] = 0;
                 }
             }
-
-        rirreperServiceInstance.updateXArray(this.rirreper);
+        }
     }
 }
 
@@ -123,40 +121,40 @@ class Board {
         this.canvas = document.getElementById('board');
         this.ctx = this.canvas.getContext('2d');
 
-        this.nrows = 2;
-        this.ncols = 6;
-        
-        // QUANDO PRECISAR SALVAR NO BANCO NOVAMENTE
-        // this.zeroFirestoreArray = { 0: [0, 0, 0],
-        //                             1: [0, 0, 0],
-        //                             2: [0, 0, 0] };
+        this.nRows = 2;
+        this.nCols = 6;
 
-        // new RiRepper(0, 0, "Jaguar", this.zeroFirestoreArray),
-        // new RiRepper(1, 0, "Malfoi", this.zeroFirestoreArray),
-        // new RiRepper(2, 0, "Torrent", this.zeroFirestoreArray),
-        // new RiRepper(3, 0, "Linguini", this.zeroFirestoreArray),
-        // new RiRepper(4, 0, "Guto", this.zeroFirestoreArray),
-        // new RiRepper(5, 0, "Murikeko", this.zeroFirestoreArray),
-        // new RiRepper(0, 1, "Baiano", this.zeroFirestoreArray),
-        // new RiRepper(1, 1, "Clock", this.zeroFirestoreArray),
-        // new RiRepper(2, 1, "Lirou", this.zeroFirestoreArray),
-        // new RiRepper(3, 1, "Jueio", this.zeroFirestoreArray),
-        // new RiRepper(4, 1, "Pampers", this.zeroFirestoreArray),
-        // new RiRepper(5, 1, "Pinça", this.zeroFirestoreArray),
+        this.rirrepers = []
 
         this.squares = [];
 
-        this.canvas.addEventListener('click', function(event) { this.click(event); }.bind(this));
+        this.canvas.addEventListener('click', function (event) { this.click(event); }.bind(this));
     }
 
     async init() {
-        const rirrepers = await rirreperServiceInstance.getRirrepers();
-        rirrepers.forEach((rirreper) => {
-            const w = this.canvas.width / this.ncols;
-            const h = this.canvas.height / this.nrows;
-            let square = new Square(rirreper, w, h, this.ctx)
+        let col = 0;
+        let row = 0
+        this.rirrepers = await rirreperServiceInstance.getRirrepers();
+        this.rirrepers.forEach((rirreper) => {
+            console.log(col, row);
+            const w = this.canvas.width / this.nCols;
+            const h = this.canvas.height / this.nRows;
+            let square = new Square(col, row, rirreper, w, h, this.ctx)
             this.squares.push(square);
             square.draw();
+            
+            // atualiza linha e coluna
+            if (col < this.nCols-1) {
+                col++;
+            } else if (row < this.nRows-1) {
+                row++;
+                col = 0;
+            }
+        });
+
+        let btn = document.getElementById("btn");
+        btn.addEventListener('click', event => {
+            this.saveChanges();
         });
     }
 
@@ -164,8 +162,8 @@ class Board {
         const bounds = this.canvas.getBoundingClientRect();
         let mouseX = event.pageX - bounds.left - scrollX;
         let mouseY = event.pageY - bounds.top - scrollY;
-        mouseX /= bounds.width; 
-        mouseY /= bounds.height; 
+        mouseX /= bounds.width;
+        mouseY /= bounds.height;
         mouseX *= this.canvas.width;
         mouseY *= this.canvas.height;
 
@@ -173,13 +171,21 @@ class Board {
             square.click(mouseX, mouseY);
         }
     }
+
+    async saveChanges() {
+        for (const rirreper of this.rirrepers) {
+            await rirreperServiceInstance.updateXArray(rirreper);
+        }
+
+        alert("brabo, atualizou o quadro. É bom não estar azaralhando");
+    }
 }
 
 window.onload = () => {
     let board = new Board();
     try {
         board.init();
-    } catch(err) {
+    } catch (err) {
         console.error(err)
     }
 }

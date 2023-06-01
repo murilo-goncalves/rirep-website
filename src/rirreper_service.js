@@ -1,13 +1,16 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
-import { collection, doc, setDoc, getDocs } from 'firebase/firestore'
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { collection, doc, setDoc, getDocs, deleteDoc } from 'firebase/firestore'
 
 class Rirreper {
-    constructor(col, row, name, firestoreArray, nVips) {
+    constructor(name, firestoreArray, nVips) {
         this.name = name;
-        this.col = col;
-        this.row = row;
         this.firestoreArray = firestoreArray;
+        // QUANDO PRECISAR SALVAR NO BANCO NOVAMENTE
+        // this.zeroFirestoreArray = { 0: [0, 0, 0],
+        //                             1: [0, 0, 0],
+        //                             2: [0, 0, 0] };
         this.xArray = this.getXArrayFromFirestoreArray();
         this.nVips = nVips;
     }
@@ -35,9 +38,11 @@ class RirreperService {
         };
         
         const app = initializeApp(firebaseConfig);
-        this.db = getFirestore(app);
 
-        this.rirrepersRef = collection(this.db, "rirrepers")
+        this.db = getFirestore(app);
+        this.storage = getStorage();
+
+        this.rirrepersRef = collection(this.db, "rirrepers");
     }
     
     async getRirrepers() {
@@ -45,7 +50,7 @@ class RirreperService {
         const querySnapshot = await getDocs(this.rirrepersRef);
         querySnapshot.forEach((doc) => {
             let data = doc.data();
-            let rirreper = new Rirreper(data.col, data.row, data.name, data.xArray, data.nVips)
+            let rirreper = new Rirreper(data.name, data.xArray, data.nVips)
             rirrepers.push(rirreper);
         });
         return rirrepers;
@@ -56,12 +61,20 @@ class RirreperService {
             await setDoc(doc(this.db, "rirrepers", rirreper.name), {
                 name: rirreper.name,
                 nVips: rirreper.nVips,
-                row: rirreper.row,
-                col: rirreper.col,
                 xArray: rirreper.firestoreArray
-            })
+            });
         } catch(err) {
-            console.error("Não deu pra salvar não, irmão. Deu esse ruim: ", err);
+            console.error("não deu pra salvar não, irmão. Deu esse ruim: ", err);
+            alert("deu ruim, olha o log")
+        }
+    }
+
+    async deleteRirreper(rirreper) {
+        try {
+            await deleteDoc(doc(this.db, "rirrepers", rirreper.name));
+        } catch(err) {
+            console.error("não deu pra deletar não, irmão. Deu esse ruim: ", err);
+            alert("deu ruim, olha o log")
         }
     }
 
@@ -69,11 +82,29 @@ class RirreperService {
         try {
             await setDoc(doc(this.db, "rirrepers", rirreper.name), {
                 xArray: rirreper.firestoreArray
-            }, { merge: true })
+            }, { merge: true });
         } catch(err) {
-            console.error("Não deu pra atualizar o X não, irmão. Deu esse ruim: ", err)
+            console.error("não deu pra atualizar o X não, irmão. Deu esse ruim: ", err);
+            alert("deu ruim, olha o log");
         }
     }
+
+    async updateNVips(rirreper) {
+        try {
+            await setDoc(doc(this.db, "rirrepers", rirreper.name), {
+                nVips: rirreper.nVips
+            }, { merge: true });
+        } catch(err) {
+            console.error("não deu pra atualizar os vips não, irmão. Deu esse ruim: ", err);
+            alert("deu ruim, olha o log");
+        }
+    }
+
+    async getRirreperImgPromise(rirreperName) {
+        let imgRef = ref(this.storage, `${rirreperName}.jpg`);
+        return getDownloadURL(imgRef);
+    }
+
 }
 
 export const rirreperServiceInstance = new RirreperService();

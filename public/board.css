@@ -1,0 +1,39 @@
+.jumbotron {
+    background-color: rgba(238, 238, 238, 0.7);
+    position:absolute;
+    top:0px;
+    right:0px;
+    bottom:0px;
+    left:0px;
+  }
+
+canvas {
+    border: 3px solid black;
+    display: block;
+    position: relative;
+    margin: auto;
+    top: 5vh;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80%;
+    width: 80%;   
+}
+
+body {
+    background: url(images/rirep.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: contain;
+    height : 100vh;
+}
+
+.btn-wrapper {
+    text-align: center;
+    padding: 10vh;
+}
+
+#button {
+    position: relative;
+}
