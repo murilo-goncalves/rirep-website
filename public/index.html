@@ -13,7 +13,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="home.css"/>
-    <link rel="stylesheet" href="add_noia_form.css"/>
+    <link rel="stylesheet" href="add_rirreper_form.css"/>
     <title>Quadro Ri Rep</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
   </head>
@@ -22,14 +22,16 @@
       <div id="row" class="row">
       </div> 
       <div class="btn-wrapper">
-        <button id="btn" type="button" class="btn btn-primary btn-lg">novo noia</button>
+        <button id="board-btn" type="button" class="btn btn-info btn-lg">quadro de x</button>
+        <button id="new-rirreper-btn" type="button" class="btn btn-primary btn-lg">novo rirreper</button>
+        <button id="vip-selector-btn" type="button" class="btn btn-info btn-lg">sorteador</button>
       </div>
     </div>
-    <div id="addNoiaModal" class="modal">
+    <div id="addRirreperModal" class="modal">
       <div class="container">
-        <span class="close">&times;</span>
-        <form action="signup.html" method="post" id="signup">
-          <h1>novo noia</h1>
+        <span class="close" id="close">&times;</span>
+        <form action="signup.html" method="post" id="form">
+          <h1>novo rirreper</h1>
           <div class="field">
             <label for="name">nome:</label>
             <input type="text" id="name" name="name" placeholder="nome" />
@@ -41,8 +43,13 @@
             <small></small> 
           </div>
           <div class="field">
+            <label for="img">fota:</label>
+            <input type="file" id="img" name="img" accept="image/*"/>
+            <small></small> 
+          </div>
+          <div class="field">
             <div class="btn-wrapper">
-              <button id="submit-btn" type="submit" class="btn btn-primary btn-lg">salvar noia</button>
+              <button id="submit-btn" type="submit" class="btn btn-primary">salvar rirreper</button>
             </div>
           </div>
         </form>

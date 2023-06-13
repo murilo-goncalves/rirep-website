@@ -34,6 +34,7 @@ img {
 
 #button {
   position: relative;
+  margin-left: 100px;
 }
 
 /* Float four columns side by side */
