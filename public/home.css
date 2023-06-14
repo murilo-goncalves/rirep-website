@@ -13,7 +13,6 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: contain;
-  overflow: hidden;
 }
 
 img {
@@ -29,12 +28,17 @@ img {
 
 .btn-wrapper {
   text-align: center;
-  padding: 2vh;
+  padding-top: 5vh;
 }
 
 #button {
   position: relative;
-  margin-left: 100px;
+}
+
+.space {
+  width: 10vh;
+  height: auto;
+  display: inline-block;
 }
 
 /* Float four columns side by side */
@@ -68,6 +72,22 @@ img {
     width: 100%;
     display: block;
     margin-bottom: 20px;
+  }
+
+  .btn-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 10vh;
+    padding-right: 10vh;
+    padding-top: 3vh;
+  }
+
+  .space {
+    display: none;
+  }
+
+  .btn {
+    margin-bottom: 3vh;  
   }
 }
 

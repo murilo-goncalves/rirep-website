@@ -7,15 +7,15 @@ class VipSelector {
 
   async init() {
     this.rirrepers = await rirreperServiceInstance.getRirrepers();
-    var inputsFrag = document.createDocumentFragment();
+    let inputsFrag = document.createDocumentFragment();
 
-    for (var i = 0; i < this.rirrepers.length; i += 1) {
-      var label = document.createElement("label");
+    for (let i = 0; i < this.rirrepers.length; i += 1) {
+      let label = document.createElement("label");
       label.for = this.rirrepers[i].name;
-      label.innerHTML = this.rirrepers[i].name + ":  ";
+      label.innerHTML = this.rirrepers[i].name + ": ";
       inputsFrag.appendChild(label);
 
-      var input = document.createElement("input");
+      let input = document.createElement("input");
       input.type = "number";
       input.id = i;
       input.name = this.rirrepers[i].name;
@@ -23,8 +23,8 @@ class VipSelector {
       input.className = "input";
       inputsFrag.appendChild(input);
 
-      var line_break1 = document.createElement("br");
-      var line_break2 = document.createElement("br");
+      let line_break1 = document.createElement("br");
+      let line_break2 = document.createElement("br");
       inputsFrag.appendChild(line_break1)
       inputsFrag.appendChild(line_break2)
     }
@@ -32,7 +32,8 @@ class VipSelector {
     let form = document.getElementById("form");
     form.appendChild(inputsFrag);
 
-    document.getElementById("btn").onclick = this.select;
+    document.getElementById("select-btn").onclick = this.select;
+    document.getElementById("save-btn").onclick = this.save;
   }
 
   weightedRandom = (weights) => {
@@ -51,35 +52,48 @@ class VipSelector {
   }
 
   select = async () => {
-    var inputs = document.getElementById("form").querySelectorAll(".input");
+    const inputs = document.getElementById("form").querySelectorAll(".input");
 
-    var inputValues = [];
+    let inputValues = [];
     inputs.forEach((input) => {
       inputValues.push(input.value);
     });
   
-    let nMaxVip = Math.max(...inputValues);
+    const nMaxVip = Math.max(...inputValues);
   
-    let weights = inputValues.map((n) => {
+    const weights = inputValues.map((n) => {
       return n < 0 ? 0 : 1 + nMaxVip - n;
     });
 
-    let idx = this.weightedRandom(weights);
+    const idx = this.weightedRandom(weights);
+    const winnerInput = document.getElementById(`${idx}`);
+    
+    const winnerName = winnerInput.name;
+    document.getElementById("winner").value = winnerName;
+    document.getElementById("winner-container").style.display = "block";
 
-    let winner = document.getElementById(`${idx}`).name;
-    document.getElementById("winner").value = winner;
-    rirreperServiceInstance.getRirreperImgPromise(winner).then((url) => {
+    let winner = await rirreperServiceInstance.getRirreperByName(winnerName);
+    winner.nVips = winnerInput.value;
+
+    rirreperServiceInstance.getRirreperImgPromise(winner.imgName).then((url) => {
       document.getElementById("rirreper").src = url;
     })
     .catch((err) => {
       console.error("Não deu pra pegar essa imagem do banco não, irmão. Deu esse ruim: ", err);
       alert("deu ruim, olha o log");
     });
-    
+  }
+
+  save = async () => {
+    const form = document.getElementById("form");
+    const inputs = form.querySelectorAll(".input");
+
+    for (var i = 0; i < this.rirrepers.length; i++) {
+      this.rirrepers[i].nVips = inputs[i].value;
+      rirreperServiceInstance.updateNVips(this.rirrepers[i]);
+    }
   }
 }
-
-
 
 window.onload = () => {
   let vipSelector = new VipSelector();

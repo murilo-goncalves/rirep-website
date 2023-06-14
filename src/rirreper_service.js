@@ -95,7 +95,7 @@ class RirreperService {
     async deleteRirreperImg(imgName) {
         const imgRef = ref(this.storage, imgName);
         await deleteObject(imgRef).then(() => {
-            console.log(`apagou a imagem ${imgName}}`)
+            console.log(`apagou a imagem ${imgName}`)
         }).catch((err) => {
             console.error("não deu pra apagar a imagem não, irmão. Deu esse ruim: ", err);
             alert("deu ruim, olha o log");

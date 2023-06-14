@@ -6,6 +6,9 @@ class Home {
   }
 
   async init() {
+    document.getElementById("new-rirreper-btn").onclick = this.clickNovoRirreper;
+    document.getElementById("vip-selector-btn").onclick = this.changeHtmlToVipSelector;
+
     this.rirrepers = await rirreperServiceInstance.getRirrepers();
 
     let tableFrag = document.createDocumentFragment();
@@ -18,15 +21,13 @@ class Home {
     const row = document.getElementById("row");
     row.appendChild(tableFrag);
 
-    document.getElementById("new-rirreper-btn").onclick = this.clickNovoRirreper;
-    document.getElementById("vip-selector-btn").onclick = this.changeHtmlToVipSelector;
     document.getElementById("board-btn").onclick = this.changeHtmlToBoard;
     document.getElementById("close").onclick = this.closeModal;
     document.getElementById("submit-btn").onclick = this.clickSalvarRirreper
     // form.addEventListener("form", this.clickSalvarRirreper);
     document.addEventListener("click", this.deleteRirreperEventListener);
   }
-
+  
   createCard = async (rirreper) => {
     let column = document.createElement("div");
     column.className = "column";
@@ -36,7 +37,7 @@ class Home {
     card.id = rirreper.name;
     let img = document.createElement("img");
     
-    await rirreperServiceInstance.getRirreperImgPromise(rirreper.imgName)
+    rirreperServiceInstance.getRirreperImgPromise(rirreper.imgName)
       .then((url) => {
         img.src = url;
       })

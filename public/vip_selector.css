@@ -11,10 +11,21 @@
   float: right;
 }
 
+#winner-container {
+  display: none;
+}
+
 body {
   background: url(images/rirep.png) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: contain;
+}
+
+@media screen and (max-width: 600px) {
+  #rirreper {
+    width: 100vw;
+    height: auto;
+  }
 }

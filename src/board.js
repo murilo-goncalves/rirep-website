@@ -124,7 +124,7 @@ class Board {
         this.nRows = 2;
         this.nCols = 6;
 
-        this.rirrepers = []
+        this.rirrepers = [];
 
         this.squares = [];
 
@@ -135,6 +135,7 @@ class Board {
         let col = 0;
         let row = 0
         this.rirrepers = await rirreperServiceInstance.getRirrepers();
+        console.log(this.rirrepers);
         this.rirrepers.forEach((rirreper) => {
             console.log(col, row);
             const w = this.canvas.width / this.nCols;

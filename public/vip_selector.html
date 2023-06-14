@@ -16,16 +16,22 @@
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
   </head>
   <body>
-    <div class="jumbotron">
-      <h1>Sorteador da Ri Rep!</h1>
-      <h3>Quantas vezes já recebeu um VIP:</h3>
-      <h4>("-1" não participará do sorteio)</h4>
-      <div id="form"></div>
-      </br></br>
-      <button id="btn" type="button" class="btn btn-primary btn-lg">vambora</button>
-      <h2>Ganhador:</h2>
-      <input type="text" id="winner" value="" />
-      <img id="rirreper" src="">
+    <div id="confetti-canvas" class="container">
+      <div class="jumbotron">
+        <h1>Sorteador da Ri Rep!</h1>
+        <h3>Quantas vezes já recebeu um VIP:</h3>
+        <h4>("-1" não participará do sorteio)</h4>
+        <img id="rirreper" src="">
+        <div id="form">
+        </div>
+        <br/>
+        <button id="select-btn" type="button" class="btn btn-primary btn-lg">sorteio</button>
+        <button id="save-btn" type="button" class="btn btn-info btn-lg">salvar vips</button>
+        <div id="winner-container">
+          <h2>Ganhador:</h2>
+          <input type="text" id="winner" value="" />
+        </div>
+      </div>
     </div>
   </body>
 </html>
